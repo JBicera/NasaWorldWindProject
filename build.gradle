@@ -1,0 +1,52 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+mainClassName = 'com.chesapeaketechnology.networkviz.NetworkVisualizer'
+
+// Configure the wrapper with ALL distro so IJ has additional context
+wrapper {
+    gradleVersion = '6.0.1'
+
+    //noinspection UnnecessaryQualifiedReference
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Create a zip file containing all of the source, resource, and files required to build the repository. This should
+// be executed after all changes have been completed and are ready for review.
+task packageDistribution(type: Zip) {
+    group = 'distribution'
+    description = 'Creates a zip file containing a copy of all of the files within the repository'
+
+    archiveFileName = "WorldWindNetworks.zip"
+    destinationDirectory = project.rootDir
+
+    from(project.rootDir) {
+        exclude ".gradle"
+        exclude "build"
+        exclude "WorldwindNetworks"
+        exclude "*.log"
+        exclude "*.zip"
+        exclude "*.idea"
+    }
+}
+
+ext {
+    slf4jVersion = '1.7.28'
+}
+
+dependencies {
+    implementation 'org.json:json:20210307'
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+    compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+
+    compile 'com.google.guava:guava:18.0'
+
+    testCompile 'junit:junit:4.+'
+}
